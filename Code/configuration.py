@@ -4,8 +4,8 @@ from configparser import ConfigParser
 from pathlib import Path
 
 # set sensible defaults for the configurable fields
-DATA_PATH = 'Data'
-DATABASE_NAME = 'CVEfixes_sample.db'
+DATA_PATH = "Data"
+DATABASE_NAME = "CVEfixes_sample.db"
 USER = None
 TOKEN = None
 SAMPLE_LIMIT = 25
@@ -16,17 +16,20 @@ LOGGING_LEVEL = logging.WARNING
 DATABASE = Path(DATA_PATH) / DATABASE_NAME
 config_read = False
 
-log_level_map = {'DEBUG': logging.DEBUG,
-                 'INFO': logging.INFO,
-                 'WARNING': logging.WARNING,
-                 'ERROR': logging.ERROR,
-                 'CRITICAL': logging.CRITICAL
-                 }
+log_level_map = {
+    "DEBUG": logging.DEBUG,
+    "INFO": logging.INFO,
+    "WARNING": logging.WARNING,
+    "ERROR": logging.ERROR,
+    "CRITICAL": logging.CRITICAL,
+}
 
-logging.basicConfig(level=LOGGING_LEVEL,
-                    format='%(asctime)s %(name)s %(levelname)s %(message)s',
-                    datefmt='%m/%d/%Y %H:%M:%S')
-logger = logging.getLogger('CVEfixes')
+logging.basicConfig(
+    level=LOGGING_LEVEL,
+    format="%(asctime)s %(name)s %(levelname)s %(message)s",
+    datefmt="%m/%d/%Y %H:%M:%S",
+)
+logger = logging.getLogger("CVEfixes")
 logger.removeHandler(sys.stderr)
 
 
@@ -39,22 +42,28 @@ def read_config() -> None:
     global DATA_PATH, DATABASE_NAME, DATABASE, USER, TOKEN, SAMPLE_LIMIT, NUM_WORKERS, LOGGING_LEVEL, config_read
 
     config = ConfigParser()
-    if config.read(['.CVEfixes.ini',
-                    Path.home() / '.config' / 'CVEfixes.ini',
-                    Path.home() / '.CVEfixes.ini']):
+    if config.read(
+        [".CVEfixes.ini", Path.home() / ".config" / "CVEfixes.ini", ".CVEfixes.ini"]
+    ):
         # try and update settings for each of the values, use
-        DATA_PATH = config.get('CVEfixes', 'database_path', fallback=DATA_PATH)
-        DATABASE_NAME = config.get('CVEfixes', 'database_name', fallback=DATABASE_NAME)
-        USER = config.get('GitHub', 'user', fallback=USER)
-        TOKEN = config.get('GitHub', 'token', fallback=TOKEN)
-        SAMPLE_LIMIT = config.getint('CVEfixes', 'sample_limit', fallback=SAMPLE_LIMIT)
-        NUM_WORKERS = config.getint('CVEfixes', 'num_workers', fallback=NUM_WORKERS)
-        Path(DATA_PATH).mkdir(parents=True, exist_ok=True)  # create the directory if not exists.
+        DATA_PATH = config.get("CVEfixes", "database_path", fallback=DATA_PATH)
+        DATABASE_NAME = config.get("CVEfixes", "database_name", fallback=DATABASE_NAME)
+        USER = config.get("GitHub", "user", fallback=USER)
+        TOKEN = config.get("GitHub", "token", fallback=TOKEN)
+        SAMPLE_LIMIT = config.getint("CVEfixes", "sample_limit", fallback=SAMPLE_LIMIT)
+        NUM_WORKERS = config.getint("CVEfixes", "num_workers", fallback=NUM_WORKERS)
+        Path(DATA_PATH).mkdir(
+            parents=True, exist_ok=True
+        )  # create the directory if not exists.
         DATABASE = Path(DATA_PATH) / DATABASE_NAME
-        LOGGING_LEVEL = log_level_map.get(config.get('CVEfixes', 'logging_level', fallback='WARNING'), logging.WARNING)
+        LOGGING_LEVEL = log_level_map.get(
+            config.get("CVEfixes", "logging_level", fallback="WARNING"), logging.WARNING
+        )
         config_read = True
     else:
-        logger.warning('Cannot find CVEfixes config file in the working or $HOME directory, see INSTALL.md')
+        logger.warning(
+            "Cannot find CVEfixes config file in the working or $HOME directory, see INSTALL.md"
+        )
         sys.exit()
 
 
